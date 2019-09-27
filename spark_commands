@@ -1,0 +1,29 @@
+hadoop/sbin/start-dfs.sh
+spark/sbin/start-all.sh
+
+hadoop/bin/hadoop fs -mkdir -p /clustering-coefficient/facebook
+hadoop/bin/hadoop fs -mkdir -p /clustering-coefficient/roadNet
+
+
+hadoop/bin/hadoop fs -put /vagrant/data/spark/input/facebook/* /clustering-coefficient/facebook/input
+hadoop/bin/hadoop fs -put /vagrant/data/spark/input/roadNet/* /clustering-coefficient/roadNet/input
+
+
+hadoop/bin/hadoop fs -ls /clustering-coefficient/facebook/input
+hadoop/bin/hadoop fs -ls /clustering-coefficient/roadNet/input
+
+
+spark/bin/spark-submit --class org.spark.clustering.coefficient.ClusCoe /vagrant/data/spark/clustering-coefficient/target/clustering-coefficient-1.0.jar hdfs://localhost:54310/clustering-coefficient/facebook/input hdfs://localhost:54310/clustering-coefficient/facebook/output
+
+spark/bin/spark-submit --class org.spark.clustering.coefficient.ClusCoe /vagrant/data/spark/clustering-coefficient/target/clustering-coefficient-1.0.jar hdfs://localhost:54310/clustering-coefficient/roadNet/input hdfs://localhost:54310/clustering-coefficient/roadNet/output
+
+hadoop/bin/hadoop fs -rm -r /clustering-coefficient/facebook/output
+hadoop/bin/hadoop fs -rm -r /clustering-coefficient/roadNet/output
+
+rm -r adjacencyList calcuNodeDegreeDen globalClusCoeff nodeNeighPointSum nodePairRddFirst pCombinationPair unClusterCoeffNode
+
+cp -r  adjacencyList calcuNodeDegreeDen globalClusCoeff nodeNeighPointSum nodePairRddFirst pCombinationPair unClusterCoeffNode  /vagrant/data/spark/OutputData/facebook
+
+cp -r  adjacencyList calcuNodeDegreeDen globalClusCoeff nodeNeighPointSum nodePairRddFirst pCombinationPair unClusterCoeffNode  /vagrant/data/spark/OutputData/roadNet
+
+
